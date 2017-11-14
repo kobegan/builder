@@ -56,8 +56,11 @@ function package_version(){
 }
 
 function get_config(){
+   
    name=$1
    n=${#__CERBERO_CONFIG[@]}
+   
+   
    for(( i=0 ; i < $n ; i++ ));
    do
        key=${__CERBERO_CONFIG[$i]}
@@ -77,9 +80,11 @@ function _home(){
 	local config=$($inifile.open $__config__)
 
     local section='cerbero'
-    if [ ! -z $__custom__ ]; then
-	   section="cerbero.${__custom__}"	   
-	fi
+    
+#	if [ ! -z $__custom__ ]; then	
+#	   section="cerbero.${__custom__}"	   
+#	fi
+	
 	d=	
 	if [ "x$(uname)" == "xLinux" ];then
 		d=$($config.get $section home.linux)
@@ -87,11 +92,11 @@ function _home(){
 	    d=$($config.get $section home.windows)
 	fi
 	
-	if [ ! -z $__custom__ ]; then
-	    cd $(dirname $__config__)
-		[ ! -z $d ] && cd $d
-	    d= $PWD
-	fi
+#	if [ ! -z $__custom__ ]; then
+#	    cd $(dirname $__config__)
+#		[ ! -z $d ] && cd $d
+#	    d= $PWD
+#	fi
 	echo $d
 
 }
@@ -160,8 +165,12 @@ function load_cerbero_pkg_src(){
 }
 
 function run(){
+    trace "RUN: $@"
 	cd $__home__ &&
 	./cerbero-uninstalled -c "$__cbc__" $@
+	trace $PWD
+	trace "RUN: $? | ./cerbero-uninstalled -c "$__cbc__" $@"
+
 }
 
 
@@ -217,11 +226,11 @@ function release_repo(){
 	local rdir=$(release_dir)/$rtag
 	if [ $name == build_tools ]; then
 	   if [ -f $rdir/$(build_tools_pkg_name) ]; then
-	       echo $rdir/$rtag
+	       echo $rdir
 		   return 0
 	   fi
 	elif [ -f $rdir/Build.yaml ]; then
-	   echo $rdir/$rtag
+	   echo $rdir
 	   return 0
 	fi
 	local inifile=$($__dir__/inifile)
@@ -296,7 +305,6 @@ else
 	for fn in ${__exports__[@]}
 	do
 	   if [[ "$opt" == ".${fn}"  ]];then
-		  __home__=$(_home)
 		  ${fn} $@
 		  exit $?
 	   fi

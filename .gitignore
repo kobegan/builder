@@ -2,5 +2,7 @@
 /MinGW
 /cerbero
 /out
-/cerbero.build
+/cerbero.*
+/projects
+/releases
 shell.cmd

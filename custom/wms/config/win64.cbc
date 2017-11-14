@@ -1,0 +1,19 @@
+#coding=utf-8
+
+from cerbero.config import Architecture,Platform
+arch = Architecture.X86_64
+target_arch = Architecture.X86_64
+platform=Platform.WINDOWS
+target_platform=Platform.WINDOWS
+cache_file = 'wms-%s_%sd.cache'%(platform,arch)
+
+_customdir=os.path.abspath( os.path.dirname(__file__) +'/..')
+import configparser
+_builder_rooter=os.path.abspath( os.path.dirname(__file__)+'/../../..')
+_conf=configparser.ConfigParser()
+_conf.read(os.path.join(_builder_rooter,'config.ini'))
+_home=_conf['cerbero']['home.%s'%platform].encode('utf-8')
+
+prefix=os.path.join(_home,'%s'%arch)
+packages_dir=os.path.join(_customdir,'packages')
+recipes_dir=os.path.join(_customdir,'recipes')

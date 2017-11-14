@@ -1,0 +1,30 @@
+__file__=$(echo ${BASH_SOURCE[0]} )
+__dir__=$(cd $(dirname ${BASH_SOURCE[0]}); pwd )
+__name__=$(basename $__file__)
+
+
+cbc=
+if [ "x$(uname)" == "xLinux" ] ; then
+   cbc=$cbc/lin64.cbc
+else
+  cbc=$cbc/win64d.cbc
+  for opt in $@
+  do
+    if [ $1 == '--release' ]; then
+       cbc=$cbc/win64.cbc
+	   shift
+    fi
+  done
+fi
+
+name=$1; shift
+if [ -z $name ]; then
+   echo 'Recipe name not specified'
+   exit 1
+fi
+$__dir__/commands/make.sh --recipe $name $@ --cbc $cbc --source $__dir__/projects --custom $__name__
+
+
+
+
+
