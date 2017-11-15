@@ -20,3 +20,8 @@ recipes_dir=os.path.join(_customdir,'recipes')
 
 build_type='debug'
 prefix +='d'
+
+
+logs ='%s/logs/%s_%sd'%(home_dir,platform,arch)
+sources ='%s/sources/%s_%sd'%(home_dir,platform,arch)
+

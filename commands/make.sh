@@ -122,7 +122,7 @@ function options(){
 	if [ ! -z $BS_all ]; then
 	  BS_configure='--configure'
 	  BS_compile='--compile'
-	  BS_check='--check'
+	  BS_check=
 	  BS_install='--install'
 	fi
 

@@ -1,0 +1,35 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+#from cerbero.tools.libtool import LibtoolLibrary
+from cerbero.utils import shell
+import shutil
+import subprocess
+import os
+#__dir__=os.path.basename(__file__)
+
+def username():
+    output = subprocess.check_output(['git','config','user.email'])
+    parts = output.strip().split('@')
+    assert len(parts)==2 and parts[1]=='kedacom.com','git config user.email %s illegal'%parts
+    return parts[0]
+
+
+class Recipe(recipe.Recipe):
+    name = 'wsf'
+    version = '0.1.0'
+    stype = SourceType.GIT
+    btype = BuildType.AUTOCMAKE
+    remotes = { 'origin' : 'ssh://%s@172.16.6.169:29418/WMS/wsf'%username()
+     }
+    commit = 'origin/release' #'e6fabda0acc596738fc2bc2eca4c02446e0c8751'
+    licenses = [License.BSD_like]
+
+    files_libs  = ['libwsf-actor','libwsf-transport']
+    files_devel = ['include/wsf', 'lib/pkgconfig/wsf-actor.pc','lib/pkgconfig/wsf-transport.pc']
+    files_tests = ['testkits/wsf']
+
+    #def post_install(self):
+    #    
+#
+    #    shutil.copy( __dir__ +'/wsf.tshell/tshell.cmd', self.config.prefix +'/tshell.cmd' )
+    #    shutil.copy( __dir__ +'/wsf.tshell/tshell.sh', self.config.prefix +'/tshell.sh' )
+
