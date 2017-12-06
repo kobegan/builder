@@ -2,19 +2,14 @@
 
 $tmp = Get-Location
 $cwd = $tmp.Path
-$rootDir = (Join-Path $cwd "..")
+$rootDir = $cwd.Substring(0, $cwd.LastIndexOf("\"))
 $env:__ROOTDIR__ = $rootDir
 
 $tmpDir = (Join-Path $rootDir "~tmp")
 
-Dir $tmpDir
-if(!$?) {
-	$($tmpDir + " Not exits, create one")
-	New-Item -Path $tmpDir -ItemType "directory"
-	if(!$?) {
-			$("Create Dir failed")
-			break;
-	}
+if(!(Test-Path $tmpDir))
+{
+	mkdir $tmpDir
 }
 
 function GinGW_Donwload_Unzip_Install() {
@@ -54,8 +49,7 @@ $fileNameToSave = $MINGW_URL.Split("/")[-1]
 #
 $file = (Join-Path $tmpDir $fileNameToSave)
 
-$client=new-object System.Net.WebClient
-$client.DownloadFile( $MINGW_URL, $file )
+(New-Object System.Net.WebClient).DownloadFile($MINGW_URL,$file)
 
 If (!$?)
 {
@@ -64,17 +58,16 @@ break
 };
 
 $destinationToUnzip = $rootDir
-Get-Item $destinationToUnzip
-if(!$?) {
-	$($destinationToUnzip + " Not exits, create one")
-	New-Item -Path $destinationToUnzip -ItemType "directory"
-	if(!$?) {
-			$("Create Dir failed")
-			break;
-	}
+
+if(!(Test-Path $destinationToUnzip))
+{
+	mkdir $destinationToUnzip
 }
 
-Expand-Archive -Path $file -DestinationPath $destinationToUnzip
+$shell = New-Object -ComObject Shell.Application
+$sourceFolder = $shell.NameSpace($file)
+$destinationFolder = $shell.NameSpace($destinationToUnzip)
+$destinationFolder.CopyHere($sourceFolder.Items())
 
 if(!$?) {
 "解压文件操作失败";
